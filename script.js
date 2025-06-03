@@ -72,5 +72,5 @@ function showSlides() {
     }
 
     // Set timeout for the next slide
-    setTimeout(showSlides, 5000); // Change slide every 5 seconds
+    setTimeout(showSlides, 10000); // Change slide every 5 seconds
 }
