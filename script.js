@@ -51,6 +51,20 @@ fetch('resources/images/collages.json')
 // Slideshow functionality
 let slideIndex = 0;
 
+// Fullscreen button functionality
+const fullscreenBtn = document.getElementById('fullscreen-btn');
+if (fullscreenBtn) {
+    fullscreenBtn.addEventListener('click', () => {
+        if (slideshowContainer.requestFullscreen) {
+            slideshowContainer.requestFullscreen();
+        } else if (slideshowContainer.webkitRequestFullscreen) { // Safari
+            slideshowContainer.webkitRequestFullscreen();
+        } else if (slideshowContainer.msRequestFullscreen) { // IE11
+            slideshowContainer.msRequestFullscreen();
+        }
+    });
+}
+
 function showSlides() {
     const slides = document.getElementsByClassName('slide');
 
@@ -72,5 +86,5 @@ function showSlides() {
     }
 
     // Set timeout for the next slide
-    setTimeout(showSlides, 10000); // Change slide every 5 seconds
+    setTimeout(showSlides, 10000); // Change slide every 10 seconds
 }
