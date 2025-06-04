@@ -50,6 +50,7 @@ fetch('resources/images/collages.json')
 
 // Slideshow functionality
 let slideIndex = 0;
+let slideTimeout = null;
 
 // Fullscreen button functionality
 const fullscreenBtn = document.getElementById('fullscreen-btn');
@@ -73,7 +74,7 @@ if (fullscreenBtn) {
     });
 }
 
-function showSlides() {
+function showSlides(index = slideIndex) {
     const slides = document.getElementsByClassName('slide');
 
     // Debugging: Log the slides to ensure they are being processed
@@ -85,14 +86,47 @@ function showSlides() {
     }
 
     // Show the current slide
-    slides[slideIndex].style.display = 'flex';
+    slides[index].style.display = 'flex';
+    slideIndex = index;
 
-    // Increment slide index for next time
-    slideIndex++;
-    if (slideIndex >= slides.length) {
-        slideIndex = 0;
-    }
-
-    // Set timeout for the next slide
-    setTimeout(showSlides, 10000); // Change slide every 10 seconds
+    // Clear previous timeout if any
+    if (slideTimeout) clearTimeout(slideTimeout);
+    slideTimeout = setTimeout(() => {
+        showSlides((slideIndex + 1) % slides.length);
+    }, 10000); // Change slide every 10 seconds
 }
+
+// Keyboard navigation for arrow keys
+window.addEventListener('keydown', (e) => {
+    const slides = document.getElementsByClassName('slide');
+    if (!slides.length) return;
+    if (e.key === 'ArrowRight') {
+        showSlides((slideIndex + 1) % slides.length);
+    } else if (e.key === 'ArrowLeft') {
+        showSlides((slideIndex - 1 + slides.length) % slides.length);
+    }
+});
+
+// Touch swipe support for mobile navigation
+let touchStartX = null;
+slideshowContainer.addEventListener('touchstart', function(e) {
+    if (e.touches.length === 1) {
+        touchStartX = e.touches[0].clientX;
+    }
+});
+slideshowContainer.addEventListener('touchend', function(e) {
+    if (touchStartX === null) return;
+    let touchEndX = e.changedTouches[0].clientX;
+    let diffX = touchEndX - touchStartX;
+    const slides = document.getElementsByClassName('slide');
+    if (Math.abs(diffX) > 50 && slides.length) { // threshold for swipe
+        if (diffX < 0) {
+            // Swipe left: next slide
+            showSlides((slideIndex + 1) % slides.length);
+        } else {
+            // Swipe right: previous slide
+            showSlides((slideIndex - 1 + slides.length) % slides.length);
+        }
+    }
+    touchStartX = null;
+});
