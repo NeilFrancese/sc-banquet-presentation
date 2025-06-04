@@ -55,12 +55,20 @@ let slideIndex = 0;
 const fullscreenBtn = document.getElementById('fullscreen-btn');
 if (fullscreenBtn) {
     fullscreenBtn.addEventListener('click', () => {
+        const elem = document.documentElement;
+        // Try to use the best available fullscreen API for mobile browsers
         if (slideshowContainer.requestFullscreen) {
             slideshowContainer.requestFullscreen();
         } else if (slideshowContainer.webkitRequestFullscreen) { // Safari
             slideshowContainer.webkitRequestFullscreen();
         } else if (slideshowContainer.msRequestFullscreen) { // IE11
             slideshowContainer.msRequestFullscreen();
+        } else if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen) {
+            elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) {
+            elem.msRequestFullscreen();
         }
     });
 }
